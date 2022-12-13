@@ -12,21 +12,41 @@ enum alt_keycodes {
     MD_BOOT,               //Restart into bootloader after hold timeout
     RBG_CLR,
 };
+enum my_layers {
+    _QWERTY = 0,
+    _FNROW,
+    _CTRL,
+    _ALT
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT_65_ansi_blocker(
+    [_QWERTY] = LAYOUT_65_ansi_blocker(
         QK_GESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS, KC_EQL,  KC_BSPC, KC_DEL,  \
         KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_LBRC, KC_RBRC, KC_BSLS, KC_HOME, \
         KC_CAPS, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,          KC_ENT,  KC_PGUP, \
         KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,          KC_UP,   KC_PGDN, \
-        LM(2,MOD_LCTL), KC_LGUI,  LM(2,MOD_LALT),                            KC_SPC,                             KC_RALT, MO(1),   KC_LEFT, KC_DOWN, KC_RGHT  \
+        LM(_CTRL,MOD_LCTL), KC_LGUI,  LM(_ALT,MOD_LALT),                            KC_SPC,                             KC_RALT, MO(_FNROW),   KC_LEFT, KC_DOWN, KC_RGHT  \
     ),
-    [1] = LAYOUT_65_ansi_blocker(
+    [_FNROW] = LAYOUT_65_ansi_blocker(
         KC_GRV,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______, _______, \
         _______, RGB_SPD, RGB_VAI, RGB_SPI, RGB_HUI,  LGUI(LSFT(KC_S)), RGB_SAI, _______, _______,_______, KC_PSCR, _______, _______, _______, KC_END, \
         _______, RGB_RMOD,RGB_VAD, RGB_MOD, RGB_HUD,_______ ,RGB_SAD ,_______ , _______, LGUI(KC_L), _______, _______,          KC_WSCH, _______, \
         _______, RGB_TOG, RBG_CLR, _______, _______, MD_BOOT, _______, KC_MAIL, _______, _______, _______, _______,          KC_VOLU, _______, \
         _______, _______, EE_CLR,                            KC_MPLY,                            _______, _______, KC_MPRV, KC_VOLD, KC_MNXT  \
+    ),
+    [_CTRL] = LAYOUT_65_ansi_blocker(
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, \
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, \
+        _______, _______, _______,                            _______,                            _______, _______, _______, _______, _______  \
+    ),
+    [_ALT] = LAYOUT_65_ansi_blocker(
+        _______, _______, _______, _______, LALT(KC_F4), _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, \
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______, _______, \
+        _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          KC_VOLU, _______, \
+        _______, _______, _______,                            KC_MPLY,                            _______, _______, KC_MPRV, KC_VOLD, KC_MNXT  \
     ),
     /*
     [X] = LAYOUT(
@@ -153,11 +173,26 @@ void matrix_init_user(void) {
     clearAllLight=false;
 };
 
+void led_set_user(uint8_t usb_led) {
+    if (IS_LED_ON(usb_led, USB_LED_CAPS_LOCK)) {
+        rgblight_sethsv(HSV_RED);
+
+    } else {
+         rgblight_sethsv(HSV_CYAN);
+    }
+} 
 bool rgb_matrix_indicators_user(void) {
-    uint8_t this_led = host_keyboard_leds();
+    // uint8_t this_led = host_keyboard_leds();
     int R = 255;
     int G = 128;
     int B = 0;
+
+    // if ( this_led & (1<<USB_LED_CAPS_LOCK)) {
+    //         R = 168;
+    //         G = 76;
+    //         B = 0;
+	//         rgb_matrix_set_color(30,R,G,B); //light the capslock key when capslock is enabled
+	//   }
 
         switch (biton32(layer_state)) {
             case 1:
@@ -222,11 +257,6 @@ bool rgb_matrix_indicators_user(void) {
                         clear67();
         }
 
-	  if ( this_led & (1<<USB_LED_CAPS_LOCK)) {
-            R = 168;
-            G = 76;
-            B = 0;
-	        rgb_matrix_set_color(30,R,G,B); //light the capslock key when capslock is enabled
-	  }
+	
     return true;
 }
