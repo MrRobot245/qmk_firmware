@@ -71,19 +71,30 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 }
 #endif // ENCODER_ENABLE
 
-bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max ) {
     int SideLEDs[] = { 67, 68, 70, 71,73, 74, 76, 77, 80, 81, 83, 84, 87, 88, 91 ,92 };
+     switch(get_highest_layer(layer_state)) {
+        case 0:
+            if (host_keyboard_led_state().caps_lock) {
+                for (int i = 0; i < 16; i++) {
+                    RGB_MATRIX_INDICATOR_SET_COLOR(SideLEDs[i],255,0,0)
+                    }
+                }
+                else{
+                    for (int i = 0; i < 16; i++) {
+                        RGB_MATRIX_INDICATOR_SET_COLOR(SideLEDs[i],0,255,255)
+                    }
+                }
+                break;
+        case 1:
+         for (int i = 0; i < 16; i++) {
+            RGB_MATRIX_INDICATOR_SET_COLOR(SideLEDs[i],255,0,255)
+        }
+        break;
+     }
+     
+     
 
-    if (host_keyboard_led_state().caps_lock) {
-        for (int i = 0; i < 16; i++) {
-            RGB_MATRIX_INDICATOR_SET_COLOR(SideLEDs[i],255,0,0)
-        }
-    }
-    else{
-        for (int i = 0; i < 16; i++) {
-            RGB_MATRIX_INDICATOR_SET_COLOR(SideLEDs[i],0,255,255)
-        }
-    }
     return false;
 }
 
