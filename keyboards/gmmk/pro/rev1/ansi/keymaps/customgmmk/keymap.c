@@ -97,20 +97,3 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max ) {
 
     return false;
 }
-
-// void matrix_init_user(void) {
-//     rgblight_mode(1);
-//     // rgb_matrix_set_color_all(HSV_RED);
-//     rgblight_enable();
-
-// }
-// void led_set_user(uint8_t usb_led) {
-//     if (IS_LED_ON(usb_led, USB_LED_CAPS_LOCK)) {
-//         // rgblight_enable();
-//         // rgblight_sethsv(HSV_RED);
-
-//     } else {
-//         // rgblight_disable();
-//         rgblight_sethsv(HSV_OFF);
-//     }
-// } 
