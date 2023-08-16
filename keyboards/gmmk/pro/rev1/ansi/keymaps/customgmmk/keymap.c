@@ -76,8 +76,8 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max ) {
      switch(get_highest_layer(layer_state)) {
         case 0:
             if (host_keyboard_led_state().caps_lock) {
-                for (int i = 0; i < 16; i++) {
-                    RGB_MATRIX_INDICATOR_SET_COLOR(SideLEDs[i],255,0,0)
+                    for (int i = 0; i < 97; i++) {
+                        RGB_MATRIX_INDICATOR_SET_COLOR(i,255,0,0)
                     }
                 }
                 else{
@@ -87,9 +87,12 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max ) {
                 }
                 break;
         case 1:
-         for (int i = 0; i < 16; i++) {
-            RGB_MATRIX_INDICATOR_SET_COLOR(SideLEDs[i],255,0,255)
-        }
+            for (int i = 0; i < 16; i++) {
+                RGB_MATRIX_INDICATOR_SET_COLOR(SideLEDs[i],255,0,255)
+            }
+            for (int i = 0; i < 97; i++) {
+                RGB_MATRIX_INDICATOR_SET_COLOR(i,255,0,255)
+            }
         break;
      }
      
