@@ -61,30 +61,47 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // clang-format on
 
 #ifdef ENCODER_ENABLE
- bool encoder_update_user(uint8_t index, bool clockwise) {
-     if (clockwise) {
-       tap_code(KC_VOLU);
-     } else {
-       tap_code(KC_VOLD);
+bool encoder_update_user(uint8_t index, bool clockwise) {
+    if (clockwise) {
+      tap_code(KC_VOLU);
+    } else {
+      tap_code(KC_VOLD);
+    }
+    return true;
+}
+#endif // ENCODER_ENABLE
+void keyboard_post_init_user(void) {
+    rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
+    rgb_matrix_sethsv_noeeprom(HSV_OFF);
+}
+
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max ) {
+    int SideLEDs[] = { 67, 68, 70, 71,73, 74, 76, 77, 80, 81, 83, 84, 87, 88, 91 ,92 };
+     switch(get_highest_layer(layer_state)) {
+        case 0:
+            if (host_keyboard_led_state().caps_lock) {
+                    for (int i = 0; i < 97; i++) {
+                        RGB_MATRIX_INDICATOR_SET_COLOR(i,255,0,0)
+                    }
+                }
+                else{
+                    for (int i = 0; i < 16; i++) {
+                        RGB_MATRIX_INDICATOR_SET_COLOR(SideLEDs[i],0,255,255)
+                    }
+                    
+                }
+                break;
+        case 1:
+            for (int i = 0; i < 16; i++) {
+                RGB_MATRIX_INDICATOR_SET_COLOR(SideLEDs[i],255,0,255)
+            }
+            for (int i = 0; i < 97; i++) {
+                RGB_MATRIX_INDICATOR_SET_COLOR(i,255,0,255)
+            }
+        break;
      }
-     return true;
- }
- #endif // ENCODER_ENABLE
- 
- void matrix_init_user(void) {
-     // rgblight_disable();
-     rgblight_enable();
-     rgblight_sethsv(HSV_RED);
-     // rgblight_sethsv(0,255,255);
-     rgblight_mode(1);
- 
- }
- 
- void led_set_user(uint8_t usb_led) {
-     if (IS_LED_ON(usb_led, USB_LED_CAPS_LOCK)) {
-         rgblight_enable();
- 
-     } else {
-         rgblight_disable();
-     }
- } 
+     
+     
+
+    return false;
+}
